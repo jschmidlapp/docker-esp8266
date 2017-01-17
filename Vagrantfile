@@ -8,6 +8,7 @@ Vagrant.configure(2) do |config|
     d.has_ssh = true
   end
 
+  config.vm.synced_folder "..", "/project"
   config.ssh.port = 22
   
 end
