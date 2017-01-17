@@ -15,7 +15,7 @@ Vagrant.configure(2) do |config|
   # config.vm.box = "base"
 
   config.vm.provider "docker" do |d|
-    d.image = "jschmidlapp/esp8266:next"
+    d.image = "jschmidlapp/docker-esp8266:latest"
     d.has_ssh = true
   end
 
