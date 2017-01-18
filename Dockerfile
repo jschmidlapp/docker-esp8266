@@ -13,6 +13,11 @@ RUN apt-get install -y sudo git build-essential autoconf gperf bison flex texinf
 RUN useradd --create-home -s /bin/bash vagrant
 WORKDIR /home/vagrant
 
+RUN git clone https://github.com/tommie/esptool-ck.git \
+    && cd esptool-ck \
+    && make \
+    && cp esptool /usr/bin
+
 RUN rm -rf /opt \
     && git clone --recursive https://github.com/pfalcon/esp-open-sdk.git /opt \
     && usermod -a -G dialout vagrant \
