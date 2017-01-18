@@ -15,7 +15,6 @@ WORKDIR /home/vagrant
 
 RUN rm -rf /opt \
     && git clone --recursive https://github.com/pfalcon/esp-open-sdk.git /opt \
-#    && useradd -M -s /bin/bash -u 1000 build \
     && usermod -a -G dialout vagrant \
     && echo "vagrant ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/vagrant \
     && chmod 0440 /etc/sudoers.d/vagrant \
@@ -38,13 +37,6 @@ RUN mkdir -p /home/vagrant/.ssh && \
     echo -n 'vagrant:vagrant' | chpasswd && \
     `# Thanks to http://docs.docker.io/en/latest/examples/running_ssh_service/` && \
     mkdir /var/run/sshd
-
-# Install puppet
-#RUN wget http://apt.puppetlabs.com/puppetlabs-release-trusty.deb -O /tmp/puppetlabs-release-trusty.deb && \
-#    dpkg -i /tmp/puppetlabs-release-trusty.deb && \
-#    apt-get update && \
-#    apt-get install puppet puppet-common hiera facter virt-what lsb-release  -y --force-yes && \
-#    rm -f /tmp/*.deb
 
 RUN apt-get clean
 
