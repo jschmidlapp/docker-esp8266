@@ -7,17 +7,31 @@ RUN sed 's@archive.ubuntu.com@mirrors.digitalocean.com@' -i /etc/apt/sources.lis
 RUN apt-get update --fix-missing
 
 #install required packages
-RUN apt-get install -y sudo git build-essential autoconf gperf bison flex texinfo wget help2man gawk libtool libncurses5-dev unzip libexpat-dev python2.7-dev python-serial unzip libexpat-dev
+RUN apt-get install -y sudo git build-essential autoconf gperf bison flex texinfo wget help2man gawk libtool libncurses5-dev unzip libexpat-dev python2.7-dev python-serial unzip libexpat-dev minicom python-pip
 
 # Create and configure vagrant user
 RUN useradd --create-home -s /bin/bash vagrant
 WORKDIR /home/vagrant
 
-RUN git clone https://github.com/tommie/esptool-ck.git \
-    && cd esptool-ck \
-    && make \
-    && cp esptool /usr/bin
+# Install Misc ESP8266 tools
+RUN pip install adafruit-ampy \
+    && pip install pyserial \
+    && pip install colorama \
+    && pip install websocket_client \
+    && pip install esptool \
+    && git clone https://github.com/wendlers/mpfshell.git \
+    && cd mpfshell \
+    && python setup.py install \
+    && echo "pu rtscts           No" > ~/.minirc.dfl \
+    && echo "export AMPY_PORT=/dev/ttyUSB0" >> ~/.bashrc
 
+# Build ESP8266 firmware tool
+RUN git clone https://github.com/tommie/esptool-ck.git \
+    && make -C esptool-ck \
+    && cp esptool-ck/esptool /usr/bin \
+    && rm -rf esptool-ck
+
+# Build ESP8266 toolchain
 RUN rm -rf /opt \
     && git clone --recursive https://github.com/pfalcon/esp-open-sdk.git /opt \
     && usermod -a -G dialout vagrant \
